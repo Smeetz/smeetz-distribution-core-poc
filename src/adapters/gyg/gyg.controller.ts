@@ -17,6 +17,17 @@ import { GygBasicAuthGuard } from './basic-auth.guard';
 // surface exposes them fine. This asymmetry is the category-mapping problem
 // made concrete.
 
+// GYG validates that an availability entry carries EITHER "vacancies" OR
+// "vacanciesByCategory", never both -- their published YAML says "optional",
+// the live validator says XOR (finding for CHAT-190). Which one to send is a
+// per-product choice made on GYG's side ("Total Availabilities" vs
+// "Availability By Ticket Category"), so it lives here in the adapter.
+const AVAILABILITY_TYPE_BY_PRODUCT: Record<string, 'TOTAL' | 'BY_CATEGORY'> = {
+  'MUSEUM-ENTRY': 'TOTAL',
+  'CABLE-CAR': 'TOTAL',
+  'THEATRE-SHOW': 'TOTAL',
+};
+
 function gygError(errorCode: string, errorMessage: string, status = 400): HttpException {
   return new HttpException({ errorCode, errorMessage }, status);
 }
@@ -107,12 +118,17 @@ export class GygController {
         availabilities: slots.map((slot) => ({
           dateTime: `${slot.dateTime}:00`,
           productId: product.id,
-          vacancies: slot.perCategory
-            .filter(({ category }) => category.standardCategory !== null)
-            .reduce((sum, c) => sum + c.available, 0),
-          vacanciesByCategory: slot.perCategory
-            .filter(({ category }) => category.standardCategory !== null)
-            .map(({ category, available }) => ({ category: category.standardCategory, vacancies: available })),
+          ...(AVAILABILITY_TYPE_BY_PRODUCT[product.id] === 'BY_CATEGORY'
+            ? {
+                vacanciesByCategory: slot.perCategory
+                  .filter(({ category }) => category.standardCategory !== null)
+                  .map(({ category, available }) => ({ category: category.standardCategory, vacancies: available })),
+              }
+            : {
+                vacancies: slot.perCategory
+                  .filter(({ category }) => category.standardCategory !== null)
+                  .reduce((sum, c) => sum + c.available, 0),
+              }),
           cutoffSeconds: 0,
           ...(!product.usesTimeslots && product.openingHours
             ? { openingTimes: [{ fromTime: product.openingHours.fromTime, toTime: product.openingHours.toTime }] }
