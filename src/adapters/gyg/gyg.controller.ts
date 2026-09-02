@@ -114,6 +114,9 @@ export class GygController {
             .filter(({ category }) => category.standardCategory !== null)
             .map(({ category, available }) => ({ category: category.standardCategory, vacancies: available })),
           cutoffSeconds: 0,
+          ...(!product.usesTimeslots && product.openingHours
+            ? { openingTimes: [{ fromTime: product.openingHours.fromTime, toTime: product.openingHours.toTime }] }
+            : {}),
           currency: mapped[0]?.price.currency ?? 'EUR',
           pricesByCategory: {
             retailPrices: mapped.map((c) => ({ category: c.standardCategory, price: c.price.amountMinor })),

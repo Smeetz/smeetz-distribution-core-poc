@@ -26,6 +26,8 @@ export interface Product {
   cancellationCutoffHours: number; // 0 = cancellable until start
   maxTicketsPerOrder?: number;
   timeslots: string[]; // "HH:MM" start times; single "00:00" when usesTimeslots=false
+  // Opening hours, only meaningful when usesTimeslots=false.
+  openingHours?: { fromTime: string; toTime: string };
   categories: TicketCategory[];
   baseCapacityPerSlot: number;
   // Venue-closed days, "YYYY-MM-DD". No availability is generated for them.

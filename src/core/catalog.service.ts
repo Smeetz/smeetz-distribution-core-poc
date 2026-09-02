@@ -21,6 +21,7 @@ export class CatalogService {
       timeslots: ['00:00'],
       baseCapacityPerSlot: 100,
       closedDates: ['2026-09-15', '2026-09-16'],
+      openingHours: { fromTime: '09:00', toTime: '18:00' },
       categories: [
         { id: 'MUS-ADULT', name: 'Adult', price: { amountMinor: 1800, currency: 'EUR' }, standardCategory: 'ADULT' },
         { id: 'MUS-CHILD', name: 'Child', price: { amountMinor: 900, currency: 'EUR' }, standardCategory: 'CHILD' },
