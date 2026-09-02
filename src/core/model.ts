@@ -28,6 +28,8 @@ export interface Product {
   timeslots: string[]; // "HH:MM" start times; single "00:00" when usesTimeslots=false
   categories: TicketCategory[];
   baseCapacityPerSlot: number;
+  // Venue-closed days, "YYYY-MM-DD". No availability is generated for them.
+  closedDates: string[];
 }
 
 export interface AvailabilitySlot {

@@ -20,6 +20,7 @@ export class CatalogService {
       maxTicketsPerOrder: 20,
       timeslots: ['00:00'],
       baseCapacityPerSlot: 100,
+      closedDates: ['2026-09-15', '2026-09-16'],
       categories: [
         { id: 'MUS-ADULT', name: 'Adult', price: { amountMinor: 1800, currency: 'EUR' }, standardCategory: 'ADULT' },
         { id: 'MUS-CHILD', name: 'Child', price: { amountMinor: 900, currency: 'EUR' }, standardCategory: 'CHILD' },
@@ -37,6 +38,7 @@ export class CatalogService {
       cancellationCutoffHours: 24,
       timeslots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
       baseCapacityPerSlot: 60,
+      closedDates: [],
       categories: [
         { id: 'CAB-ADULT', name: 'Adult', price: { amountMinor: 4500, currency: 'CHF' }, standardCategory: 'ADULT' },
         { id: 'CAB-CHILD', name: 'Child', price: { amountMinor: 2200, currency: 'CHF' }, standardCategory: 'CHILD' },
@@ -52,6 +54,7 @@ export class CatalogService {
       cancellationCutoffHours: 0,
       timeslots: ['20:00'],
       baseCapacityPerSlot: 200,
+      closedDates: [],
       categories: [
         { id: 'THE-STANDARD', name: 'Standard seat', price: { amountMinor: 3500, currency: 'EUR' }, standardCategory: 'ADULT' },
       ],

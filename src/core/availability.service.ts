@@ -23,6 +23,11 @@ export class AvailabilityService {
     let day = start;
     let steps = 0;
     while (day <= to && steps < MAX_WINDOW_DAYS) {
+      if (product.closedDates.includes(day)) {
+        day = this.nextDay(day);
+        steps += 1;
+        continue;
+      }
       for (const time of product.timeslots) {
         const dateTime = `${day}T${time}`;
         const perCategory = product.categories.map((category) => ({
