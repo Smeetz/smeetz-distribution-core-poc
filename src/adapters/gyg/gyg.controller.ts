@@ -26,6 +26,8 @@ const AVAILABILITY_TYPE_BY_PRODUCT: Record<string, 'TOTAL' | 'BY_CATEGORY'> = {
   'MUSEUM-ENTRY': 'TOTAL',
   'CABLE-CAR': 'TOTAL',
   'THEATRE-SHOW': 'TOTAL',
+  'GROUP-TOUR': 'TOTAL',
+  'GROUP-HALL': 'TOTAL',
 };
 
 function gygError(
