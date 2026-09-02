@@ -124,6 +124,7 @@ export class GygController {
   }
 
   @Post('reserve')
+  @HttpCode(200)
   reserve(@Body() body: any) {
     const data = body?.data ?? {};
     if (!data.productId || !data.dateTime || !data.gygBookingReference || !data.bookingItems?.length) {
@@ -151,6 +152,7 @@ export class GygController {
   }
 
   @Post('cancel-reservation')
+  @HttpCode(200)
   cancelReservation(@Body() body: any) {
     const reference = body?.data?.reservationReference;
     if (!reference) throw gygError('VALIDATION_FAILURE', 'reservationReference is required');
@@ -163,6 +165,7 @@ export class GygController {
   }
 
   @Post('book')
+  @HttpCode(200)
   book(@Body() body: any) {
     const data = body?.data ?? {};
     if (!data.reservationReference || !data.gygBookingReference) {
@@ -195,6 +198,7 @@ export class GygController {
   }
 
   @Post('cancel-booking')
+  @HttpCode(200)
   cancelBooking(@Body() body: any) {
     const reference = body?.data?.bookingReference;
     if (!reference) throw gygError('VALIDATION_FAILURE', 'bookingReference is required');
