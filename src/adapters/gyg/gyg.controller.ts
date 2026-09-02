@@ -28,8 +28,19 @@ const AVAILABILITY_TYPE_BY_PRODUCT: Record<string, 'TOTAL' | 'BY_CATEGORY'> = {
   'THEATRE-SHOW': 'TOTAL',
 };
 
-function gygError(errorCode: string, errorMessage: string, status = 400): HttpException {
-  return new HttpException({ errorCode, errorMessage }, status);
+function gygError(
+  errorCode: string,
+  errorMessage: string,
+  status = 400,
+  extra: Record<string, unknown> = {},
+): HttpException {
+  return new HttpException({ errorCode, errorMessage, ...extra }, status);
+}
+
+// Their YAML example: "2020-12-01T07:35:53+00:00" -- no milliseconds, explicit
+// offset. toISOString()'s ".062Z" is rejected by the live validator.
+function gygDateTime(d: Date): string {
+  return d.toISOString().slice(0, 19) + '+00:00';
 }
 
 @Controller('1')
@@ -47,7 +58,10 @@ export class GygController {
 
   private categoryByEnum(product: Product, gygCategory: string): TicketCategory {
     const category = this.mappedCategories(product).find((c) => c.standardCategory === gygCategory);
-    if (!category) throw gygError('INVALID_TICKET_CATEGORY', `Category ${gygCategory} not available for this product`);
+    if (!category)
+      throw gygError('INVALID_TICKET_CATEGORY', `Category ${gygCategory} not available for this product`, 400, {
+        ticketCategory: gygCategory,
+      });
     return category;
   }
 
@@ -162,7 +176,7 @@ export class GygController {
       return {
         data: {
           reservationReference: hold.id,
-          reservationExpiration: hold.expiresAt.toISOString(),
+          reservationExpiration: gygDateTime(hold.expiresAt),
         },
       };
     } catch (e) {

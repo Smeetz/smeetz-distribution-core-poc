@@ -20,7 +20,7 @@ export class CatalogService {
       maxTicketsPerOrder: 20,
       timeslots: ['00:00'],
       baseCapacityPerSlot: 100,
-      closedDates: ['2026-09-15', '2026-09-16'],
+      closedDates: ['2026-09-15', '2026-09-16', '2026-09-25', '2026-09-26'],
       openingHours: { fromTime: '09:00', toTime: '18:00' },
       categories: [
         { id: 'MUS-ADULT', name: 'Adult', price: { amountMinor: 1800, currency: 'EUR' }, standardCategory: 'ADULT' },
