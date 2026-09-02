@@ -21,6 +21,14 @@ export class BookingService {
   hold(productId: string, dateTime: string, items: HoldItem[], customer?: CustomerContact): Hold {
     const product = this.catalog.get(productId);
 
+    // The slot must actually exist: not a closed day, and a real start time.
+    // Capacity alone is not enough -- a closed day has no counter to exhaust.
+    const day = dateTime.slice(0, 10);
+    const time = dateTime.slice(11, 16);
+    if (product.closedDates.includes(day) || !product.timeslots.includes(time)) {
+      throw new CoreError('NO_AVAILABILITY', `No bookable slot at ${dateTime}`);
+    }
+
     for (const item of items) {
       if (!product.categories.some((c) => c.id === item.categoryId)) {
         throw new CoreError('CATEGORY_NOT_FOUND', `Category ${item.categoryId} not on product ${productId}`);
