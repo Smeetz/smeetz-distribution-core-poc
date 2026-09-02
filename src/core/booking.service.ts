@@ -65,8 +65,14 @@ export class BookingService {
   }
 
   confirm(holdId: string, externalReference: string, customer?: CustomerContact): Booking {
-    // Idempotency first: a retry with the same external reference must not book twice.
-    const existing = this.byExternalRef.get(externalReference);
+    // Idempotency key is (externalReference, holdId), NOT the reference alone.
+    // GYG's Amendment Flow re-books under the SAME gygBookingReference with a
+    // NEW reservation and expects a NEW booking, while the original stays
+    // alive until cancelled. Same ref + same hold = retry, return the same
+    // booking. Same ref + different hold = amendment, create a new one.
+    // (Finding for CHAT-190: an external reference is not a sufficient
+    // idempotency key on channels that support amendments.)
+    const existing = this.byExternalRef.get(`${externalReference}::${holdId}`);
     if (existing) return existing;
 
     const hold = this.holds.get(holdId);
@@ -104,7 +110,7 @@ export class BookingService {
       cancelled: false,
     };
     this.bookings.set(booking.id, booking);
-    this.byExternalRef.set(externalReference, booking);
+    this.byExternalRef.set(`${externalReference}::${holdId}`, booking);
     return booking;
   }
 
